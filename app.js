@@ -8,10 +8,6 @@ const cors = require('cors')
 const connectToDatabase = require('./config/database')
 const port = process.env.PORT | 3000
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var logRouter = require('./routes/log')
-let loginRouter = require('./routes/login')
 let helloRouter = require('./routes/hello')
 
 var app = express();
