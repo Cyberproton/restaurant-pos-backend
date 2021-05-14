@@ -1,8 +1,10 @@
 exports.postHello = (req, res, next) => {
-    let hello = "Hello World"
+    let hello = "Hello from Node.js. Your message: "
     console.log(JSON.stringify(req.body))
     if (req.body.helloMessage) {
-        hello = req.body.helloMessage
+        hello += req.body.helloMessage
+    } else {
+        hello += 'nothing'
     }
     res.send(JSON.stringify({ helloMessage: hello }))
 }
