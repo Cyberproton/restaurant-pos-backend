@@ -17,18 +17,6 @@
 
 3. **@POST /api/food/edit: Sửa món ăn**
 - REQUEST_BODY: **món ăn cần sửa** 
-{ 
-    "id": "<id món ăn cần sửa>", 
-    "name": "<tên món ăn>", 
-    "imageUrl": "<link ảnh>", 
-    "description": "<mô tả>", 
-    "price": "<giá tiền>" 
-}
+{ "id": "<id món ăn cần sửa>", "name": "<tên món ăn>", "imageUrl": "<link ảnh>", "description", "<mô tả>", "price": "<giá tiền>" }
 - RESPONSE_BODY: **món ăn mới sửa** 
-{ 
-    "id": "<id món ăn mới sửa>", 
-    name": "<tên món ăn>", 
-    "imageUrl": "<link ảnh>", 
-    "description": "<mô tả>", 
-    "price": "<giá tiền>" 
-}
+{ "id": "<id món ăn mới sửa>", name": "<tên món ăn>", "imageUrl": "<link ảnh>", "description": "<mô tả>", "price": "<giá tiền>" }
