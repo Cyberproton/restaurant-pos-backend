@@ -9,6 +9,7 @@ const connectToDatabase = require('./config/database')
 const port = process.env.PORT | 3000
 
 let helloRouter = require('./routes/hello')
+let foodRouter = require('./routes/food')
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/hello', helloRouter)
 // https:localhost:3000/
 app.use('/', helloRouter)
+app.use('/api/food', foodRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
