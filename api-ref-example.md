@@ -12,8 +12,8 @@
     "description": "<mô tả>", 
     "price": "<giá tiền>" 
 }
-- RESPONSE_BODY: **món ăn mới thêm** 
-{ "id": "<id>", name": "<tên món ăn>", "imageUrl": "<link ảnh>", "description": "<mô tả>", "price": "<giá tiền>" }
+- RESPONSE_BODY: **món ăn mới thêm**  
+{ "id": "<id món ăn mới thêm>", name": "<tên món ăn>", "imageUrl": "<link ảnh>", "description": "<mô tả>", "price": "<giá tiền>" }
 
 3. **@POST /api/food/edit: Sửa món ăn**
 - REQUEST_BODY: **món ăn cần sửa** 
