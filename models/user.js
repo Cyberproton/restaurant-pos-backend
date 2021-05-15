@@ -1,13 +1,32 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
 
-const user = new Schema({
-    username: { type: String, default: ''},
-    password: { type: String, default: ''},
+const userSchema = new mongoose.Schema({
+    username: { 
+        type: String, 
+        require: true,
+        min: 6,
+        max: 255,
+    },
+    password: { 
+        type: String, 
+        require: true,
+        min: 6,
+        max: 1024,
+    },
+    fullname: { 
+        type: String, 
+        default: 'Customer',
+        min: 6,
+        max: 255,
+    },
+    phonenumber: { 
+        type: String, 
+        min: 8,
+        max: 11,
+    },
+    dateofbird: { 
+        type: Date,
+    },
+})
 
-    loginAt: { type: Date, default: Date.now},
-    logoutAt: { type: Date, default: Date.now},
-    
-}, { collection: 'user' })
-
-module.exports = mongoose.model('user', user)
+module.exports = mongoose.model('User', userSchema);

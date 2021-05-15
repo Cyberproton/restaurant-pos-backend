@@ -1,0 +1,37 @@
+Khách hàng đăng nhập
+
+@POST /api/uer/login: Đăng nhập tài khoản khách hàng
+
+REQUEST_BODY: thông tin đăng nhập tài khoản
+{ 
+    "username": "<tên đăng nhập>", 
+    "password": "<mật khẩu>",
+}
+
+RESPONSE_BODY:
+case 1: Đăng nhập thành công: 
+header: {
+    "Status Code": 200,
+    "auth-token": <Mã băm id khách hàng đăng nhập (dùng jsonwebtoken)>,
+}
+
+case 2: Đăng nhập thất bại
+header: { "Status Code": 400 }
+body: các loại thông báo trả về (string): 
+    ""username" must only contain alpha-numeric characters"
+    ""username" length must be at least 6 characters long"
+    ""password" length must be at least 6 characters long"
+    ""Username is not found"
+    "Invalid password"
+    ""password" is required"
+    ""username" is required"
+
+
+# Kiểm tra đã được đăng nhập hay chưa
+Sử dụng module trong router/verifyToken:
+ví dụ :
+    const router = require("express").Router();
+    const verify = require('./verifytoken');
+    router.get('/', verify, () => {
+        res.send("Login success");
+    });
