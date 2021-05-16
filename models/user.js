@@ -21,11 +21,13 @@ const userSchema = new mongoose.Schema({
     },
     phonenumber: { 
         type: String, 
-        min: 8,
-        max: 11,
+        min: 6,
+        max: 12,
     },
     dateofbird: { 
-        type: Date,
+        type: String,
+        min: 8,
+        max: 11,
     },
 })
 

@@ -20,20 +20,16 @@ const registerValidation = data => {
             .max(1024)
             .required()
             .valid(Joi.ref('password')),
-        fullname: { 
-            type: String, 
-            default: 'Customer',
-            min: 6,
-            max: 255,
-        },
-        phonenumber: { 
-            type: String, 
-            min: 8,
-            max: 11,
-        },
-        dateofbird: { 
-            type: Date,
-        },
+        fullname: Joi.string()
+            .default('Customer')
+            .min(6)
+            .max(255),
+        phonenumber: Joi.string()
+            .min(6)
+            .max(12),
+        dateofbird: Joi.string()
+            .min(8)
+            .max(11),
     });
     return schema.validate(data, Schema);
 }

@@ -20,5 +20,5 @@ module.exports = async (req, res) => {
 
     // Create and assign a token
     const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+    res.header('auth-token', token).send({ "token" : token });
 }

@@ -1,0 +1,21 @@
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "username" : "tranlongan",
+    "password" : "123456"
+}
+
+
+###
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+    "username" : "usernameprovip123",
+    "password" : "123456",
+    "repassword" : "123456",
+    "fullname" : "tran long an",
+    "phonenumber" : "012345678",
+    "dateofbird" : "10/05/2000"
+}
