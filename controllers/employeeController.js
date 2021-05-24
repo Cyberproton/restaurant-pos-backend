@@ -37,7 +37,7 @@ exports.add = async (req, res, next) => {
         res.status(500).send({ msg: e.message });
 
     // Checking if the username is already in database
-    const usernameExit = await User.findOne({ username: req.body.username });
+    const usernameExit = Employee.findOne({ username: req.body.username });
     if (usernameExit) return res.status(400).send('Username already exists');
 
     // Hash Passwords

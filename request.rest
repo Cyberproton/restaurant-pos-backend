@@ -1,4 +1,4 @@
-POST http://localhost:3000/api/user/login
+POST http://localhost:3000/api/employee/login
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/api/user/register
+POST http://localhost:3000/api/employee/add
 Content-Type: application/json
 
 {
@@ -23,7 +23,10 @@ Content-Type: application/json
     "repassword" : "123456",
     "fullname" : "tran long an",
     "phonenumber" : "012345678",
-    "dateofbirth" : "10/05/2000"
+    "work": "cleck",
+    "dateofbirth": "10/05/2000",
+    "mailaddress": "cleck@gmail.com",
+    "salary": 2000000
 }
 
 ###

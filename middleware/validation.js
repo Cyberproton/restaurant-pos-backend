@@ -1,7 +1,5 @@
-// Validation
 const Joi = require('joi');
 const { Schema } = require('mongoose');
-
 
 // Register Validation for User Account
 const userRegisterValidation = data => {
