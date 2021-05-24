@@ -1,13 +1,13 @@
 const router = require('express').Router();
-// Import User Router
-let authRouter = require('./auth');
+const userRouter = require('./user');
+const employeeRouter = require('./employee');
 
 function route(app) {
     // User router
-    app.use('/api/user', authRouter);
+    app.use('/api/user', userRouter);
 
-    // Home router
-    //app.use('/', homeRouter);
+    // Employee router
+    app.use('/api/employee', employeeRouter);
 }
 
 module.exports = route;

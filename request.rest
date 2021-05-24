@@ -2,20 +2,33 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-    "username" : "tranlongan",
+    "username" : "username",
     "password" : "123456"
 }
 
+###
+GET http://localhost:3000/api/user/60aafc9415c42638d0bb4bb1
+Content-Type: application/json
+
+{
+}
 
 ###
 POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-    "username" : "usernameprovip123",
+    "username" : "username",
     "password" : "123456",
     "repassword" : "123456",
     "fullname" : "tran long an",
     "phonenumber" : "012345678",
-    "dateofbird" : "10/05/2000"
+    "dateofbirth" : "10/05/2000"
+}
+
+###
+DELETE  http://localhost:3000/api/user/60aafc9415c42638d0bb4bb1
+Content-Type: application/json
+
+{
 }

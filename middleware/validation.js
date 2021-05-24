@@ -27,7 +27,7 @@ const registerValidation = data => {
         phonenumber: Joi.string()
             .min(6)
             .max(12),
-        dateofbird: Joi.string()
+        dateofbirth: Joi.string()
             .min(8)
             .max(11),
     });
