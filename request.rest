@@ -1,3 +1,60 @@
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "username" : "username123",
+    "password" : "123456789"
+}
+
+###
+POST http://localhost:3000/api/user/logout
+Content-Type: application/json
+
+{
+}
+
+###
+DELETE http://localhost:3000/api/user/60ab1e380e4ca634f4c83523
+Content-Type: application/json
+
+{
+}
+
+###
+GET http://localhost:3000/api/user/60ab24383e190724e8872924
+Content-Type: application/json
+
+{
+}
+
+###
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+    "username" : "username123s",
+    "password" : "123456",
+    "repassword" : "123456",
+    "fullname" : "tran long an",
+    "phonenumber" : "012345678",
+    "dateofbirth": "10/05/2000"
+}
+
+###
+PUT  http://localhost:3000/api/user/60ab24383e190724e8872924
+Content-Type: application/json
+
+{
+    "username" : "username123",
+    "password" : "123456789",
+    "fullname" : "tran long an 123",
+    "phonenumber" : "01234567812",
+    "dateofbirth" : "10/05/2000"
+}
+
+
+###
+
 POST http://localhost:3000/api/employee/login
 Content-Type: application/json
 
@@ -7,7 +64,21 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/api/user/60aafc9415c42638d0bb4bb1
+POST http://localhost:3000/api/employee/logout
+Content-Type: application/json
+
+{
+}
+
+###
+DELETE http://localhost:3000/api/employee/60ab20d751fc7b3f9032a15d
+Content-Type: application/json
+
+{
+}
+
+###
+GET http://localhost:3000/api/employee/60ab20d751fc7b3f9032a15d
 Content-Type: application/json
 
 {
@@ -25,12 +96,12 @@ Content-Type: application/json
     "phonenumber" : "012345678",
     "work": "cleck",
     "dateofbirth": "10/05/2000",
-    "mailaddress": "cleck@gmail.com",
-    "salary": 2000000
+    "mailaddress": "employee@gmail.com",
+    "salary": 1234124
 }
 
 ###
-PUT  http://localhost:3000/api/user/60ab09d26cca0820580a6fd7
+PUT  http://localhost:3000/api/employee/60ab24383e190724e8872924
 Content-Type: application/json
 
 {

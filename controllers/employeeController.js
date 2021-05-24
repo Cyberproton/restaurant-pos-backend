@@ -19,15 +19,25 @@ exports.login = async (req, res) => {
     if (!validPass) return res.status(400).send('Invalid password');
 
     // Create and assign a token
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET);
+    const token = jwt.sign({ id: employee._id }, process.env.TOKEN_SECRET);
 
-    // Set cookie save
+    // Create cookie
     const maxAge = req.params.remember === "true" ? (10 * 365 * 24 * 60 * 60) : (60 * 5 * 1000);
     res.cookie('token_mama', token, { maxAge: maxAge });
 
     res.status(200).send({ msg: 'Login successful' });
 }
 
+// Logout employee account
+exports.logout = (req, res) => {
+    try {
+        // Clear cookie
+        res.clearCookie('token_mama');
+        res.status(200).send({ msg: 'Logout successful' });
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+}
 
 // Add a employee account = register 
 exports.add = async (req, res, next) => {
@@ -37,7 +47,7 @@ exports.add = async (req, res, next) => {
         res.status(500).send({ msg: e.message });
 
     // Checking if the username is already in database
-    const usernameExit = Employee.findOne({ username: req.body.username });
+    const usernameExit = await Employee.findOne({ username: req.body.username });
     if (usernameExit) return res.status(400).send('Username already exists');
 
     // Hash Passwords
@@ -69,9 +79,9 @@ exports.get = async (req, res, next) => {
     const id = req.params.employeeId;
     // Check employee exists
     const employeeExists = await Employee.findOne({ _id: id });
-    if (!employeeExists) return res.status(400).send('User is not found');
+    if (!employeeExists) return res.status(400).send('Employee is not found');
     // get account
-    User.findById(id)
+    Employee.findById(id)
         .exec()
         .then(result => {
             res.status(200).send(result.toObject());
@@ -86,9 +96,9 @@ exports.delete = async (req, res, next) => {
     const id = req.params.employeeId;
     // Check employee exists
     const employeeExists = await Employee.findOne({ _id: id });
-    if (!employeeExists) return res.status(400).send('User is not found');
+    if (!employeeExists) return res.status(400).send('Employee is not found');
     // Delete account
-    User.deleteOne({ _id: id })
+    Employee.deleteOne({ _id: id })
         .exec()
         .then(result => {
             res.status(200).json({
@@ -106,7 +116,7 @@ exports.update = async (req, res, next) => {
     const id = req.params.employeeId;
     // Check employee exists
     const employeeExists = await Employee.findOne({ _id: id });
-    if (!employeeExists) return res.status(400).send('User is not found');
+    if (!employeeExists) return res.status(400).send('Employee is not found');
 
     // Hash Passwords
     const salt = await bcrypt.genSalt(10);
@@ -124,7 +134,7 @@ exports.update = async (req, res, next) => {
         mailaddress: req.body.mailaddress,
         salary: req.body.salary,
     });
-    User.updateOne({ _id: id }, employee)
+    Employee.updateOne({ _id: id }, employee)
         .exec()
         .then(result => {
             res.status(200).json({
