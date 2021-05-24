@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { registerValidation, loginValidation } = require('../middleware/validation');
+const { userRegisterValidation, loginValidation } = require('../middleware/validation');
 
 // Login user account
 exports.login = async (req, res) => {
@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
 // Register user account
 exports.register = async (req, res) => {
     // Lets validate the data vefore we a user
-    const { e } = registerValidation(req.body);
+    const { e } = userRegisterValidation(req.body);
     if (e)
         res.status(500).send({ msg: e.message });
 
@@ -71,8 +71,11 @@ exports.logout = (req, res) => {
 }
 
 // Get user account infomation
-exports.get = (req, res, next) => {
+exports.get = async (req, res, next) => {
     const id = req.params.userId;
+    // Check user exists
+    const userExists = await User.findOne({ _id: id });
+    if (!userExists) return res.status(400).send('User is not found');
     // get account
     User.findById(id)
         .exec()
@@ -85,8 +88,11 @@ exports.get = (req, res, next) => {
 };
 
 // Delete user account
-exports.delete = (req, res, next) => {
+exports.delete = async (req, res, next) => {
     const id = req.params.userId;
+    // Check user exists
+    const userExists = await User.findOne({ _id: id });
+    if (!userExists) return res.status(400).send('User is not found');
     // Delete account
     User.deleteOne({ _id: id })
         .exec()
@@ -105,17 +111,31 @@ exports.delete = (req, res, next) => {
 
 
 // Update user account infomation
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
     const id = req.params.userId;
-    // Update account
-    User.updateOne({ _id: id }, req.body)
+    // Check user exists
+    const userExists = await User.findOne({ _id: id });
+    if (!userExists) return res.status(400).send('User is not found');
+    
+    // Hash Passwords
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+    // Create a new user
+    const user = new User({
+        _id: id,
+        username: req.body.username,
+        password: hashPassword,
+        fullname: req.body.fullname,
+        phonenumber: req.body.phonenumber,
+        dateofbirth: req.body.dateofbirth,
+    });
+
+    User.updateOne({ _id: id }, user)
         .exec()
         .then(result => {
-            // Clear cookie
-            res.clearCookie('token_mama');
-            //console.log(result);
             res.status(200).json({
-                message: "User deleted"
+                message: "User Update"
             });
         })
         .catch(e => {

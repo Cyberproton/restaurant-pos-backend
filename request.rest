@@ -27,8 +27,13 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:3000/api/user/60aafc9415c42638d0bb4bb1
+PUT  http://localhost:3000/api/user/60ab09d26cca0820580a6fd7
 Content-Type: application/json
 
 {
+    "username" : "username123",
+    "password" : "123456789",
+    "fullname" : "tran long an 123",
+    "phonenumber" : "01234567812",
+    "dateofbirth" : "10/05/2000"
 }
