@@ -9,6 +9,8 @@ const connectToDatabase = require('./config/database');
 const route = require('./routes');
 const port = process.env.PORT | 3000;
 
+let foodRouter = require('./routes/food')
+
 var app = express();
 
 dotenv.config({ path: './config/config.env' });
@@ -32,6 +34,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Router Middlewares
 route(app);
+// https:localhost:3000/api/hello
+app.use('/api/hello', helloRouter)
+// https:localhost:3000/
+app.use('/', helloRouter)
+app.use('/api/food', foodRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
