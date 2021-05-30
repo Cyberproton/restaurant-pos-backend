@@ -32,7 +32,7 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-    "username" : "username123s",
+    "username" : "username1231s1",
     "password" : "123456",
     "repassword" : "123456",
     "fullname" : "tran long an",
