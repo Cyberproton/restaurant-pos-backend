@@ -3,36 +3,35 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const dotenv = require('dotenv')
-const cors = require('cors')
-const connectToDatabase = require('./config/database')
-const port = process.env.PORT | 3000
-
-let helloRouter = require('./routes/hello')
+const dotenv = require('dotenv');
+const cors = require('cors');
+const connectToDatabase = require('./config/database');
+const route = require('./routes');
+const port = process.env.PORT | 3000;
 
 var app = express();
 
-dotenv.config({ path: './config/config.env' })
+dotenv.config({ path: './config/config.env' });
 
 // connect to database
-connectToDatabase()
+connectToDatabase();
 
-app.use(cors())
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// Middlewares
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// https:localhost:3000/api/hello
-app.use('/api/hello', helloRouter)
-// https:localhost:3000/
-app.use('/', helloRouter)
+
+// Router Middlewares
+route(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
