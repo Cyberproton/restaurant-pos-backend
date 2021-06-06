@@ -41,7 +41,7 @@ const updateQrCode = (req, res) => {
         return
     }
     QrCode
-        .findByIdAndUpdate(id, req.body)
+        .findByIdAndUpdate(id, req.body, { new: true })
         .exec()
         .then(qrcode => res.status(200).json({ qrcode: qrcode }))
         .catch(err => res.status(500).json({ error: err }))
