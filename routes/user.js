@@ -12,13 +12,13 @@ router.post("/login", userController.login);
 // api/user/logout
 router.post("/logout", verifyToken, userController.logout);
 
-// api/user/:userId
-router.get("/:userId", verifyToken, userController.get);
+// api/user
+router.get("/", verifyToken, userController.get);
 
-// api/user/:userId
-router.delete("/:userId", verifyToken, userController.delete);
+// api/user
+router.delete("/", verifyToken, userController.delete);
 
-// api/user/:userId
-router.put("/:userId", verifyToken, userController.update);
+// api/user
+router.put("/   ", verifyToken, userController.update);
 
 module.exports = router;
