@@ -10,7 +10,7 @@ const {
 exports.login = async (req, res) => {
   // Lets validate the data vefore we a user
   const { e } = loginValidation(req.body);
-  if (e) res.status(500).send({ msg: e.message });
+  if (e) res.status(500).send({ message: e.message });
 
   // Checking if the username exists
   const user = await User.findOne({ username: req.body.username });
@@ -26,16 +26,16 @@ exports.login = async (req, res) => {
   // Create cookie
   const maxAge =
     req.params.remember === "true" ? 10 * 365 * 24 * 60 * 60 : 60 * 5 * 1000;
-  res.cookie("token_mama", token, { maxAge: maxAge });
+  res.cookie("token", token, { maxAge: maxAge });
 
-  res.status(200).send({ msg: "Login successful" });
+  res.status(200).send(token);
 };
 
 // Register user account
 exports.register = async (req, res) => {
   // Lets validate the data vefore we a user
   const { e } = userRegisterValidation(req.body);
-  if (e) res.status(500).send({ msg: e.message });
+  if (e) res.status(500).send(e.message);
 
   // Checking if the username is already in database
   const usernameExit = await User.findOne({ username: req.body.username });
@@ -51,13 +51,16 @@ exports.register = async (req, res) => {
     password: hashPassword,
     fullname: req.body.fullname,
     phonenumber: req.body.phonenumber,
-    dateofbirth: req.body.dateofbirth,
+    birthday: req.body.birthday,
+    address: req.body.address,
   });
   try {
     const savedUser = await user.save();
-    res.send(user);
+    const id = await User.findOne({ username: req.body.username });
+    const token = jwt.sign({ id: id._id }, process.env.TOKEN_SECRET);
+    res.send(token);
   } catch (e) {
-    res.status(500).send({ msg: e.message });
+    res.status(500).send(e.message);
   }
 };
 
@@ -65,16 +68,17 @@ exports.register = async (req, res) => {
 exports.logout = (req, res) => {
   try {
     // Clear cookie
-    res.clearCookie("token_mama");
-    res.status(200).send({ msg: "Logout successful" });
+    res.clearCookie("token");
+    res.status(200).send({ message: "Logout successful" });
   } catch (e) {
-    res.status(500).send({ msg: e.message });
+    res.status(500).send({ message: e.message });
   }
 };
 
 // Get user account infomation
 exports.get = async (req, res, next) => {
-  const id = req.params.userId;
+  const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+  const id = user.id;
   // Check user exists
   const userExists = await User.findOne({ _id: id });
   if (!userExists) return res.status(400).send("User is not found");
@@ -85,13 +89,14 @@ exports.get = async (req, res, next) => {
       res.status(200).send(result.toObject());
     })
     .catch((e) => {
-      res.status(500).send({ msg: e.message });
+      res.status(500).send({ message: e.message });
     });
 };
 
 // Delete user account
 exports.delete = async (req, res, next) => {
-  const id = req.params.userId;
+  const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+  const id = user.id;
   // Check user exists
   const userExists = await User.findOne({ _id: id });
   if (!userExists) return res.status(400).send("User is not found");
@@ -100,20 +105,21 @@ exports.delete = async (req, res, next) => {
     .exec()
     .then((result) => {
       // Clear cookie
-      res.clearCookie("token_mama");
+      res.clearCookie("token");
       //console.log(result);
       res.status(200).json({
         message: "User deleted",
       });
     })
     .catch((e) => {
-      res.status(500).send({ msg: e.message });
+      res.status(500).send({ message: e.message });
     });
 };
 
 // Update user account infomation
 exports.update = async (req, res, next) => {
-  const id = req.params.userId;
+  const data = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+  const id = data.id;
   // Check user exists
   const userExists = await User.findOne({ _id: id });
   if (!userExists) return res.status(400).send("User is not found");
@@ -129,7 +135,8 @@ exports.update = async (req, res, next) => {
     password: hashPassword,
     fullname: req.body.fullname,
     phonenumber: req.body.phonenumber,
-    dateofbirth: req.body.dateofbirth,
+    birthday: req.body.birthday,
+    address: req.body.address,
   });
 
   User.updateOne({ _id: id }, user)
@@ -140,6 +147,6 @@ exports.update = async (req, res, next) => {
       });
     })
     .catch((e) => {
-      res.status(500).send({ msg: e.message });
+      res.status(500).send({ message: e.message });
     });
 };
