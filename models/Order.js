@@ -11,6 +11,18 @@ const orderSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  state: { 
+    type: String,
+    default: "Pending"
+  },
+  reason: {
+    type: String,
+    default: ""
+  },
+  note: {
+    type: String,
+    default: ""
+  }
 });
 
 module.exports = mongoose.model("Order", orderSchema);

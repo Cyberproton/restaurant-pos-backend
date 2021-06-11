@@ -11,4 +11,6 @@ router.post("/", orderController.addOrder);
 
 router.delete("/:orderId", orderController.deleteOrder);
 
+router.put("/:orderId", orderController.updateOrder);
+
 module.exports = router;

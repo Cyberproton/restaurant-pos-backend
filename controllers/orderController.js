@@ -56,3 +56,12 @@ exports.deleteOrder = (req, res, next) => {
       res.status(500).json({ error: err });
     });
 };
+
+exports.updateOrder = (req, res, next) => {
+  const id = req.params.orderId;
+  Order
+    .findByIdAndUpdate(id, req.body)
+    .exec()
+    .then((order) => res.status(200).json({ order: order }))
+    .catch((err) => res.status(500).json({ error: err }))
+}
