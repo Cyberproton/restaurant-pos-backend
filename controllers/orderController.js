@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Order = require("../models/order");
+const Order = require("../models/Order");
 const Food = require("../models/food");
 
 // Get all history order of User

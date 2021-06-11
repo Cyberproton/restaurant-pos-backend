@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/verifyToken");
-const orderController = require("../controllers/orders");
+const orderController = require("../controllers/orderController");
 
 router.get("/", verifyToken, orderController.getOrders);
 
