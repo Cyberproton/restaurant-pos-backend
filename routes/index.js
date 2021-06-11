@@ -8,6 +8,9 @@ function route(app) {
 
     // Employee router
     app.use('/api/employee', employeeRouter);
+    
+    // Order router
+    app.use("/api/order", orderRouter);
 }
 
 module.exports = route;
