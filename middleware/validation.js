@@ -19,8 +19,8 @@ const userRegisterValidation = (data) => {
   return schema.validate(data, Schema);
 };
 
-// Register Validation for Employee Account
-const employeeRegisterValidation = (data) => {
+// Register Validation for Admin Account
+const adminRegisterValidation = (data) => {
   const schema = Joi.object({
     username: Joi.string().alphanum().min(6).max(225).required(),
     password: Joi.string().min(6).max(1024).required(),
@@ -31,7 +31,7 @@ const employeeRegisterValidation = (data) => {
       .valid(Joi.ref("password")),
     fullname: Joi.string().default("Customer").min(6).max(255),
     phonenumber: Joi.string().min(6).max(12),
-    work: Joi.string(),
+    role: Joi.string(),
     dateofbirth: Joi.string().min(8).max(11),
     mailaddress: Joi.string().email().required(),
     salary: Joi.number().required(),
@@ -48,6 +48,6 @@ const loginValidation = (data) => {
   return schema.validate(data, Schema);
 };
 
-module.exports.employeeRegisterValidation = employeeRegisterValidation;
+module.exports.adminRegisterValidation = adminRegisterValidation;
 module.exports.userRegisterValidation = userRegisterValidation;
 module.exports.loginValidation = loginValidation;

@@ -1,13 +1,20 @@
-const router = require('express').Router();
-const userRouter = require('./user');
-const employeeRouter = require('./employee');
+const router = require("express").Router();
+const userRouter = require("./user");
+const adminRouter = require("./admin");
+const foodRouter = require("./food");
 
 function route(app) {
-    // User router
-    app.use('/api/user', userRouter);
+  // User router
+  app.use("/api/user", userRouter);
 
-    // Employee router
-    app.use('/api/employee', employeeRouter);
+  // Admin router
+  app.use("/api/admin", adminRouter);
+
+  // Food router
+  app.use("/api/food", foodRouter);
+
+  // Admin router
+  app.use("/api/admin", adminRouter);
 }
 
 module.exports = route;
