@@ -145,3 +145,10 @@ exports.update = async (req, res, next) => {
             res.status(500).send({ msg: e.message });
         });
 };
+
+exports.getAll = async (req, res, next) => {
+    Employee.find()
+        .exec()
+        .then(employees => res.status(200).json({ employees: employees }))
+        .catch(err => res.status(500).json({ error: err }))
+};

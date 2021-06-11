@@ -19,4 +19,6 @@ router.delete('/:employeeId', employeeController.delete);
 // api/employee/:employeeId
 router.put('/:employeeId', employeeController.update);
 
+router.get('/', employeeController.getAll)
+
 module.exports = router;
