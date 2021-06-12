@@ -4,7 +4,7 @@ const Food = require("../models/food");
 
 // Get all history order of User
 exports.getOrders = (req, res, next) => {
-  Order.find({ buyer: req.body.userId })
+  Order.find({ buyer: req.params.userId })
     .exec()
     .then((data) => {
       res.status(200).send({ orders: data });
