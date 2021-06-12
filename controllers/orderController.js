@@ -7,7 +7,7 @@ exports.getOrders = (req, res, next) => {
   Order.find({ buyer: req.body.userId })
     .exec()
     .then((data) => {
-      res.status(200).send(data);
+      res.status(200).send({ orders: data });
     })
     .catch((err) => {
       res.status(500).json({ error: err });
@@ -20,7 +20,7 @@ exports.getOrder = (req, res, next) => {
     .exec()
     .then((data) => {
       if (data) {
-        res.status(200).send(data);
+        res.status(200).json({ order: data });
       } else {
         res.status(404).json({ message: "Order not found" });
       }
@@ -34,11 +34,15 @@ exports.getOrder = (req, res, next) => {
 exports.addOrder = (req, res, next) => {
   try {
     const order = new Order({
-      foorId: req.body.foorId,
+      foodId: req.body.foodId,
       quantity: req.body.quantity,
       buyer: req.body.userId,
+      note: req.body.note ? req.body.note: ""
     });
-    return order.save();
+    order
+      .save()
+      .then(order => res.status(200).json({ order: order }))
+      .catch(err => res.status(500).json({ error: err }))
   } catch (error) {
     res.status(500).json({ error: err });
   }
@@ -50,7 +54,7 @@ exports.deleteOrder = (req, res, next) => {
   Order.remove({ _id: id })
     .exec()
     .then((result) => {
-      res.status(200).send({ message: "Order deleted" });
+      res.status(200).json({ order: result, message: "Order deleted" });
     })
     .catch((err) => {
       res.status(500).json({ error: err });
@@ -65,3 +69,11 @@ exports.updateOrder = (req, res, next) => {
     .then((order) => res.status(200).json({ order: order }))
     .catch((err) => res.status(500).json({ error: err }))
 }
+
+exports.getAllOrders = (req, res, next) => {
+  Order
+    .find()
+    .exec()
+    .then(orders => res.status(200).json({ orders: orders }))
+    .catch(err => res.status(500).json({ error: err }))
+};

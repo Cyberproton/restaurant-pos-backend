@@ -3,7 +3,9 @@ const router = express.Router();
 const verifyToken = require("../middleware/verifyToken");
 const orderController = require("../controllers/orderController");
 
-router.get("/", verifyToken, orderController.getOrders);
+router.get("/", orderController.getAllOrders);
+
+router.get("/user/:userId", orderController.getOrders);
 
 router.get("/:orderId", orderController.getOrder);
 
