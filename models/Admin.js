@@ -8,7 +8,7 @@ const adminSchema = new mongoose.Schema({
   role: { type: String, required: true },
   dateofbirth: { type: String },
   mailaddress: { type: String },
-  salary: { type: Number, required: true },
+  salary: { type: String, required: true },
 });
 
 module.exports = mongoose.model("admin", adminSchema);

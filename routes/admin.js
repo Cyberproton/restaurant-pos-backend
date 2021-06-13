@@ -1,22 +1,25 @@
 const router = require("express").Router();
 const adminController = require("../controllers/adminController");
 
+// api/admin
+router.get("/", adminController.get);
+
 // api/admin/add
 router.post("/login", adminController.login);
-
-// api/admin/logout
-router.post("/logout", adminController.logout);
 
 // api/admin/add
 router.post("/add", adminController.add);
 
-// api/admin/
-router.get("/", adminController.get);
+// api/admin/all
+router.get("/all", adminController.getall);
 
-// api/admin/
-router.delete("/:employeeId", adminController.delete);
+// api/admin/role
+router.get("/role", adminController.getRole);
 
-// api/admin/
-router.put("/:employeeId", adminController.update);
+// api/admin/delete
+router.post("/delete", adminController.delete);
+
+// api/admin/update
+router.post("/update", adminController.update);
 
 module.exports = router;

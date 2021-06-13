@@ -1,85 +1,98 @@
 const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const {
-  loginValidation,
-  adminRegisterValidation,
-} = require("../middleware/validation");
+const { loginValidation } = require("../middleware/validation");
 
 // Login admin account
 exports.login = async (req, res) => {
-  // Lets validate the data vefore we a admin
-  console.log(req.body);
-
   const { e } = loginValidation(req.body);
   if (e) res.status(500).send({ msg: e.message });
-
-  // Checking if the username exists
   const admin = await Admin.findOne({ username: req.body.username });
   if (!admin) return res.status(400).send("Username is not found");
-
-  // Password is correct
   const validPass = await bcrypt.compare(req.body.password, admin.password);
   if (!validPass) return res.status(400).send("Invalid password");
-
-  // Create and assign a token
   const token = jwt.sign({ id: admin._id }, process.env.TOKEN_SECRET);
-
-  // Create cookie
-  const maxAge =
-    req.params.remember === "true" ? 10 * 365 * 24 * 60 * 60 : 60 * 5 * 1000;
-  res.cookie("token", token, { maxAge: maxAge });
-
   res.status(200).send(token);
 };
 
-// Logout admin account
-exports.logout = (req, res) => {
-  try {
-    // Clear cookie
-    res.clearCookie("token");
-    res.status(200).send({ msg: "Logout successful" });
-  } catch (e) {
-    res.status(500).send({ msg: e.message });
-  }
-};
-
-// Add a admin account = register
-exports.add = async (req, res, next) => {
-  // Lets validate the data vefore we a admin
-  const { e } = adminRegisterValidation(req.body);
-  if (e) res.status(500).send({ msg: e.message });
-
-  // Checking if the username is already in database
-  const usernameExit = await Admin.findOne({ username: req.body.username });
+exports.register = async (req, res) => {
+  const { e } = userRegisterValidation(req.body);
+  if (e) res.status(500).send(e.message);
+  const usernameExit = await User.findOne({ username: req.body.username });
   if (usernameExit) return res.status(400).send("Username already exists");
-
-  // Hash Passwords
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(req.body.password, salt);
-
-  // Create a new admin
-  const admin = new Admin({
+  const user = new User({
     username: req.body.username,
     password: hashPassword,
     fullname: req.body.fullname,
     phonenumber: req.body.phonenumber,
-    role: req.body.role,
-    dateofbirth: req.body.dateofbirth,
-    mailaddress: req.body.mailaddress,
-    salary: req.body.salary,
+    birthday: req.body.birthday,
+    address: req.body.address,
   });
-
   try {
-    const savedAdmin = await admin.save();
-    res.send({ admin: admin._id });
+    const savedUser = await user.save();
+    const id = await User.findOne({ username: req.body.username });
+    const token = jwt.sign({ id: id._id }, process.env.TOKEN_SECRET);
+    res.send(token);
   } catch (e) {
-    res.status(500).send({ msg: e.message });
+    res.status(500).send(e.message);
   }
 };
 
-// Get all admin account infomation
+// Add a admin account
+exports.add = async (req, res, next) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+    const account = new Admin({
+      username: req.body.username,
+      password: hashPassword,
+      fullname: req.body.fullname,
+      phonenumber: req.body.phonenumber,
+      role: req.body.role,
+      dateofbirth: req.body.dateofbirth,
+      mailaddress: req.body.mailaddress,
+      salary: req.body.salary,
+    });
+    let model = new Admin(account);
+    model
+      .save()
+      .then((account) =>
+        res.json({
+          account: account,
+        })
+      )
+      .catch((err) =>
+        res.send("Error while saving to database: " + err.message)
+      );
+    console.log(model);
+  } catch (err) {
+    res.send("Error has happened: " + err.message);
+  }
+};
+
+// Get current admin account infomation
 exports.get = async (req, res, next) => {
+  const admin = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+  const id = admin.id;
+  const adminExists = await Admin.findOne({ _id: id });
+  if (!adminExists) return res.status(400).send("Admin is not found");
+  console.log(adminExists);
+  res.send(adminExists);
+};
+
+// Get role account
+exports.getRole = async (req, res, next) => {
+  const admin = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+  const id = admin.id;
+  const adminExists = await Admin.findOne({ _id: id });
+  if (!adminExists) return res.status(400).send("Admin is not found");
+  res.send(adminExists.role);
+};
+
+// Get all admin account infomation
+exports.getall = async (req, res, next) => {
   const admin = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
   const id = admin.id;
   const adminExists = await Admin.findOne({ _id: id });
@@ -98,40 +111,20 @@ exports.get = async (req, res, next) => {
     );
 };
 
-// Delete a admin account
+// Boss delete a account
 exports.delete = async (req, res, next) => {
-  const admin = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
-  const id = admin.id;
-  // Check admin exists
-  const adminExists = await Admin.findOne({ _id: id });
-  if (!adminExists) return res.status(400).send("Admin is not found");
-  // Delete account
-  Admin.deleteOne({ _id: id })
+  Admin.findByIdAndRemove(req.body._id)
     .exec()
-    .then((result) => {
-      res.status(200).json({
-        message: "Admin deleted",
-      });
-    })
-    .catch((e) => {
-      res.status(500).send({ msg: e.message });
-    });
+    .then((account) => res.status(200).json({ account: account }))
+    .catch((err) => res.status(500).json({ error: err }));
 };
 
 // Update the admin account infomation
 exports.update = async (req, res, next) => {
-  const id = req.params.adminId;
-  // Check admin exists
-  const AdminExists = await Admin.findOne({ _id: id });
-  if (!adminExists) return res.status(400).send("Admin is not found");
-
-  // Hash Passwords
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(req.body.password, salt);
-
-  // Create a new admin
-  const admin = new Admin({
-    _id: id,
+  const account = new Admin({
+    _id: req.body._id,
     username: req.body.username,
     password: hashPassword,
     fullname: req.body.fullname,
@@ -141,14 +134,8 @@ exports.update = async (req, res, next) => {
     mailaddress: req.body.mailaddress,
     salary: req.body.salary,
   });
-  Admin.updateOne({ _id: id }, admin)
+  Admin.findByIdAndUpdate(req.body._id, account, { new: true })
     .exec()
-    .then((result) => {
-      res.status(200).json({
-        message: "Admin updated",
-      });
-    })
-    .catch((e) => {
-      res.status(500).send({ msg: e.message });
-    });
+    .then((account) => res.status(200).json({ account: account }))
+    .catch((err) => res.status(500).json({ error: err }));
 };
