@@ -73,6 +73,7 @@ exports.updateOrder = (req, res, next) => {
 exports.getAllOrders = (req, res, next) => {
   Order
     .find()
+    .populate("food")
     .exec()
     .then(orders => res.status(200).json({ orders: orders }))
     .catch(err => res.status(500).json({ error: err }))

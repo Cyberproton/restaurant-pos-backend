@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+// Option tự động thêm trường food vào response
+const opts = { toJSON: { virtuals: true } };
 // Note: Order chỉ thể hiện duy nhất một loại đồ ăn, 
 // để nhà bếp dễ xác nhận hoặc từ chối một món nào đó
 // Note: state gồm Pending (đang chờ xử lý), Accepted (chấp nhận), Rejected (từ chối)
@@ -26,6 +28,9 @@ const orderSchema = mongoose.Schema({
     type: String,
     default: ""
   }
-});
+}, opts);
+
+// Tạo trường food ảo để truyền vào response
+orderSchema.virtual("food", { ref: "food", localField: "foodId", foreignField: "_id", justOne: true })
 
 module.exports = mongoose.model("order", orderSchema);
