@@ -1,16 +1,13 @@
-const router = require('express').Router();
-const billController = require("../controllers/billController")
+const router = require("express").Router();
+const billController = require("../controllers/billController");
+
+router.route("/").get(billController.getBills).post(billController.addBill);
 
 router
-    .route("/")
-    .get(billController.getBills)
-    .post(billController.addBill)
-router
-    .route("/:billId")
-    .get(billController.getBill)
-    .delete(billController.deleteBill)
-router
-    .route("/employee/:employeeId")
-    .get(billController.getBillsByEmployee)
+  .route("/:billId")
+  .get(billController.getBill)
+  .delete(billController.deleteBill);
 
-module.exports = router
+router.route("/employee/:employeeId").get(billController.getBillsByEmployee);
+
+module.exports = router;

@@ -12,6 +12,7 @@ const orderSchema = mongoose.Schema({
     required: true,
   },
   quantity: { type: Number, default: 1 },
+  price: { type: Number, require: true },
   buyer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",

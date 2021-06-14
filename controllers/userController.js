@@ -128,7 +128,7 @@ exports.update = async (req, res, next) => {
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-  // Create a new user
+  // Update a new user
   const user = new User({
     _id: id,
     username: req.body.username,

@@ -60,6 +60,7 @@ const updateFood = (req, res, next) => {
 };
 
 const deleteFood = (req, res, next) => {
+  console.log(req.body);
   FoodModel.findByIdAndRemove(req.body._id)
     .exec()
     .then((food) => res.status(200).json({ food: food }))
