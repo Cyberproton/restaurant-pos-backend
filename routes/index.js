@@ -4,6 +4,7 @@ const adminRouter = require("./admin");
 const foodRouter = require("./food");
 const orderRouter = require('./order')
 const billRouter = require("./bill");
+const qrCodeRouter = require("./qrcode")
 
 function route(app) {
   // User router
@@ -23,6 +24,9 @@ function route(app) {
   
   // Bill router
   app.use("/api/bill", billRouter);
+
+  // QR router
+  app.use("/api/qrcode", qrCodeRouter)
 }
 
 module.exports = route;
