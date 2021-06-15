@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const opts = { toJSON: { virtuals: true } };
 // Note: Order chỉ thể hiện duy nhất một loại đồ ăn, 
 // để nhà bếp dễ xác nhận hoặc từ chối một món nào đó
-// Note: state gồm Pending (đang chờ xử lý), Accepted (chấp nhận), Rejected (từ chối)
+// Note: state gồm Pending (đang chờ xử lý), Accepted (chấp nhận), Rejected (từ chối), Hoàn tất (Done), Cancelled (Hủy bởi người dùng)
 const orderSchema = mongoose.Schema({
   foodId: {
     type: mongoose.Schema.Types.ObjectId,
