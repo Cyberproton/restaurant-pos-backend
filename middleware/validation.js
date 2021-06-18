@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require("joi").extend(require('@joi/date'));
 const { Schema } = require("mongoose");
 
 // Register Validation for User Account
@@ -50,10 +50,10 @@ const loginValidation = (data) => {
 
 const userProfileValidation = (data) => {
   const schema = Joi.object({
-    fullname: Joi.string().max(255),
-    phonenumber: Joi.string().min(6).max(12),
-    birthday: Joi.string().min(8).max(11),
-    address: Joi.string().min(8).max(100),
+    fullname: Joi.string().max(255).allow("", null),
+    phonenumber: Joi.string().min(4).max(15).regex(/^[0-9]+$/).allow("", null),
+    birthday: Joi.date().format("DD/MM/YYYY").allow("", null),
+    address: Joi.string().min(8).max(100).allow("", null),
   });
   return schema.validate(data, Schema);
 };
