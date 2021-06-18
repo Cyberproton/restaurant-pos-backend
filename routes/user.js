@@ -19,6 +19,10 @@ router.get("/", verifyToken, userController.get);
 router.delete("/", verifyToken, userController.delete);
 
 // api/user
-router.put("/   ", verifyToken, userController.update);
+router.put("/", verifyToken, userController.update);
+
+router.put("/profile", verifyToken, userController.updateProfile);
+
+router.put("/password", verifyToken, userController.updatePassword);
 
 module.exports = router;

@@ -48,6 +48,29 @@ const loginValidation = (data) => {
   return schema.validate(data, Schema);
 };
 
-module.exports.adminRegisterValidation = adminRegisterValidation;
-module.exports.userRegisterValidation = userRegisterValidation;
-module.exports.loginValidation = loginValidation;
+const userProfileValidation = (data) => {
+  const schema = Joi.object({
+    fullname: Joi.string().max(255),
+    phonenumber: Joi.string().min(6).max(12),
+    birthday: Joi.string().min(8).max(11),
+    address: Joi.string().min(8).max(100),
+  });
+  return schema.validate(data, Schema);
+};
+
+const userPasswordValidation = (data) => {
+  const schema = Joi.object({
+    currentPassword: Joi.string().min(6).max(1024).required(),
+    newPassword: Joi.string().min(6).max(1024).required(),
+    rePassword: Joi.string().min(6).max(1024).required()
+  });
+  return schema.validate(data, Schema);
+};
+
+module.exports = {
+  adminRegisterValidation: adminRegisterValidation,
+  userRegisterValidation: userRegisterValidation,
+  loginValidation: loginValidation,
+  userProfileValidation: userProfileValidation,
+  userPasswordValidation: userPasswordValidation,
+}
