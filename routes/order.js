@@ -3,18 +3,18 @@ const router = express.Router();
 const verifyToken = require("../middleware/verifyToken");
 const orderController = require("../controllers/orderController");
 
-router.get("/", orderController.getAllOrders);
+router.get("/", verifyToken, orderController.getAllOrders);
 
-router.get("/user/:userId", orderController.getOrders);
+router.get("/user/:userId", verifyToken, orderController.getOrders);
 
-router.get("/:orderId", orderController.getOrder);
+router.get("/:orderId", verifyToken, orderController.getOrder);
 
-router.post("/", orderController.addOrder);
+router.post("/", verifyToken, orderController.addOrder);
 
-router.delete("/:orderId", orderController.deleteOrder);
+router.delete("/:orderId", verifyToken, orderController.deleteOrder);
 
-router.put("/:orderId", orderController.updateOrder);
+router.put("/:orderId", verifyToken, orderController.updateOrder);
 
-router.put("/:orderId/state", orderController.updateOrderState);
+router.put("/:orderId/state", verifyToken, orderController.updateOrderState);
 
 module.exports = router;

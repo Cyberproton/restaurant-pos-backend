@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Food = require("../models/food");
+const User = require("../models/User")
 
 // Get all history order of User
 exports.getOrders = (req, res, next) => {
@@ -31,20 +32,28 @@ exports.getOrder = (req, res, next) => {
 };
 
 // Add new an Order
-exports.addOrder = (req, res, next) => {
+exports.addOrder = async (req, res, next) => {
   try {
+    const userId = req.user.id;
+    const user = await User.findById({ _id: userId });
+    if (!user) { 
+      res.status(400).json({ message: "User is not found" });
+      return;
+    }
+
     const order = new Order({
       foodId: req.body.foodId,
       quantity: req.body.quantity,
-      buyer: req.body.userId,
+      buyer: user._id,
       note: req.body.note ? req.body.note: ""
     });
     order
       .save()
       .then(order => res.status(200).json({ order: order }))
-      .catch(err => res.status(500).json({ error: err, message: err.message }))
+      .catch(err => res.status(500).json({ error: err, message: err.message }));
   } catch (error) {
     res.status(500).json({ error: err });
+    return;
   }
 };
 
