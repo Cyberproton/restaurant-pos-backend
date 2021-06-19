@@ -7,6 +7,7 @@ const food = new mongoose.Schema({
   price: { type: Number, default: 0 },
   type: { type: String },
   regions: { type: String },
+  lock: { type: Boolean, require: true, default: false },
 });
 
 module.exports = mongoose.model("food", food);

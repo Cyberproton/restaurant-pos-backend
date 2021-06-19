@@ -60,11 +60,32 @@ const updateFood = (req, res, next) => {
 };
 
 const deleteFood = (req, res, next) => {
-  console.log(req.body);
   FoodModel.findByIdAndRemove(req.body._id)
     .exec()
     .then((food) => res.status(200).json({ food: food }))
     .catch((err) => res.status(500).json({ error: err }));
 };
 
-module.exports = { getFoods, getFood, addFood, updateFood, deleteFood };
+const lockFood = (req, res) => {
+  FoodModel.updateOne({ _id: req.body._id }, { $set: { lock: true } })
+    .exec()
+    .then((food) => res.status(200).send("Successful"))
+    .catch((err) => res.status(500).json({ error: err }));
+};
+
+const unLockFood = (req, res) => {
+  FoodModel.updateOne({ _id: req.body._id }, { $set: { lock: false } })
+    .exec()
+    .then((food) => res.status(200).send("Successful"))
+    .catch((err) => res.status(500).json({ error: err }));
+};
+
+module.exports = {
+  getFoods,
+  getFood,
+  addFood,
+  updateFood,
+  deleteFood,
+  lockFood,
+  unLockFood,
+};
