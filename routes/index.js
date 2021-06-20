@@ -2,9 +2,10 @@ const router = require("express").Router();
 const userRouter = require("./user");
 const adminRouter = require("./admin");
 const foodRouter = require("./food");
-const orderRouter = require('./order')
+const orderRouter = require("./order");
 const billRouter = require("./bill");
-const qrCodeRouter = require("./qrcode")
+const qrCodeRouter = require("./qrcode");
+const orderTestRouter = require("./orderTest");
 
 function route(app) {
   // User router
@@ -20,13 +21,16 @@ function route(app) {
   app.use("/api/admin", adminRouter);
 
   // Order router
-  app.use("/api/order", orderRouter);
-  
+  // app.use("/api/order", orderRouter);
+
+  // Order router
+  app.use("/api/ordertest", orderTestRouter);
+
   // Bill router
   app.use("/api/bill", billRouter);
 
   // QR router
-  app.use("/api/qrcode", qrCodeRouter)
+  app.use("/api/qrcode", qrCodeRouter);
 }
 
 module.exports = route;

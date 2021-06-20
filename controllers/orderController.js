@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Food = require("../models/food");
-const User = require("../models/User")
+const User = require("../models/User");
 
 // Get all history order of User
 exports.getOrders = (req, res, next) => {
@@ -36,7 +36,7 @@ exports.addOrder = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const user = await User.findById({ _id: userId });
-    if (!user) { 
+    if (!user) {
       res.status(400).json({ message: "User is not found" });
       return;
     }
@@ -45,12 +45,14 @@ exports.addOrder = async (req, res, next) => {
       foodId: req.body.foodId,
       quantity: req.body.quantity,
       buyer: user._id,
-      note: req.body.note ? req.body.note: ""
+      note: req.body.note ? req.body.note : "",
     });
     order
       .save()
-      .then(order => res.status(200).json({ order: order }))
-      .catch(err => res.status(500).json({ error: err, message: err.message }));
+      .then((order) => res.status(200).json({ order: order }))
+      .catch((err) =>
+        res.status(500).json({ error: err, message: err.message })
+      );
   } catch (error) {
     res.status(500).json({ error: err });
     return;
@@ -72,29 +74,29 @@ exports.deleteOrder = (req, res, next) => {
 
 exports.updateOrder = (req, res, next) => {
   const id = req.params.orderId;
-  Order
-    .findByIdAndUpdate(id, req.body, { new: true })
+  Order.findByIdAndUpdate(id, req.body, { new: true })
     .exec()
     .then((order) => res.status(200).json({ order: order }))
-    .catch((err) => res.status(500).json({ error: err, message: err.message }))
-}
+    .catch((err) => res.status(500).json({ error: err, message: err.message }));
+};
 
 exports.getAllOrders = (req, res, next) => {
-  Order
-    .find()
+  Order.find()
     .populate("food")
     .exec()
-    .then(orders => res.status(200).json({ orders: orders }))
-    .catch(err => res.status(500).json({ error: err, message: err.messsage }))
+    .then((orders) => res.status(200).json({ orders: orders }))
+    .catch((err) =>
+      res.status(500).json({ error: err, message: err.messsage })
+    );
 };
 
 const validStates = {
-  "Pending": 1,
-  "Accepted": 2,
-  "Done": 10,
-  "Rejected": 11,
-  "Cancelled": 12
-}
+  Pending: 1,
+  Accepted: 2,
+  Done: 10,
+  Rejected: 11,
+  Cancelled: 12,
+};
 
 // Use this to update order's state instead of updateOrder
 exports.updateOrderState = async (req, res, next) => {
@@ -114,19 +116,30 @@ exports.updateOrderState = async (req, res, next) => {
   const currentState = order.state;
 
   if (currentState === "Cancelled") {
-    res.status(400).json({ order: order, message: "Order has already been cancelled by user" });
+    res
+      .status(400)
+      .json({
+        order: order,
+        message: "Order has already been cancelled by user",
+      });
     return;
   }
   if (currentState === "Rejected") {
-    res.status(400).json({ order: order, message: "Order has already been rejected" });
+    res
+      .status(400)
+      .json({ order: order, message: "Order has already been rejected" });
     return;
   }
   if (currentState === "Done") {
-    res.status(400).json({ order: order, message: "Order has already been completed" });
+    res
+      .status(400)
+      .json({ order: order, message: "Order has already been completed" });
     return;
   }
   if (validStates[currentState] >= validStates[state]) {
-    res.status(400).json({ order: order, message: "Order state may have already updated" });
+    res
+      .status(400)
+      .json({ order: order, message: "Order state may have already updated" });
     return;
   }
 
@@ -136,6 +149,6 @@ exports.updateOrderState = async (req, res, next) => {
   order.state = state;
   order
     .save()
-    .then(order => res.status(200).json({ order: order }))
-    .catch(err => res.status(500).json({ error: err, message: err.message }))
+    .then((order) => res.status(200).json({ order: order }))
+    .catch((err) => res.status(500).json({ error: err, message: err.message }));
 };

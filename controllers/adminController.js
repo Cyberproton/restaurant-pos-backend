@@ -1,12 +1,9 @@
 const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { loginValidation } = require("../middleware/validation");
 
 // Login admin account
 exports.login = async (req, res) => {
-  const { e } = loginValidation(req.body);
-  if (e) res.status(500).send({ msg: e.message });
   const admin = await Admin.findOne({ username: req.body.username });
   if (!admin) return res.status(400).send("Username is not found");
   const validPass = await bcrypt.compare(req.body.password, admin.password);
@@ -16,8 +13,6 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { e } = userRegisterValidation(req.body);
-  if (e) res.status(500).send(e.message);
   const usernameExit = await User.findOne({ username: req.body.username });
   if (usernameExit) return res.status(400).send("Username already exists");
   const salt = await bcrypt.genSalt(10);
