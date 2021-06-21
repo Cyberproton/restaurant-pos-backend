@@ -61,7 +61,6 @@ exports.add = async (req, res, next) => {
       .catch((err) =>
         res.send("Error while saving to database: " + err.message)
       );
-    console.log(model);
   } catch (err) {
     res.send("Error has happened: " + err.message);
   }
@@ -73,7 +72,6 @@ exports.get = async (req, res, next) => {
   const id = admin.id;
   const adminExists = await Admin.findOne({ _id: id });
   if (!adminExists) return res.status(400).send("Admin is not found");
-  console.log(adminExists);
   res.send(adminExists);
 };
 

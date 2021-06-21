@@ -2,52 +2,29 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {
-  userRegisterValidation,
-  loginValidation,
   userProfileValidation,
-  userPasswordValidation
+  userPasswordValidation,
 } = require("../middleware/validation");
 
 // Login user account
 exports.login = async (req, res) => {
-  // Lets validate the data vefore we a user
-  const { error } = loginValidation(req.body);
-  if (error) { 
-    res.status(500).send({ message: error.message });
-    return;
-  }
-
   // Checking if the username exists
   const user = await User.findOne({ username: req.body.username });
   if (!user) return res.status(400).send("Username is not found");
-
   // Password is correct
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass) return res.status(400).send("Invalid password");
-
   // Create and assign a token
   const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET);
-
-  // Create cookie
-  const maxAge =
-    req.params.remember === "true" ? 10 * 365 * 24 * 60 * 60 : 60 * 5 * 1000;
-  res.cookie("token", token, { maxAge: maxAge });
-
   res.status(200).send(token);
 };
 
 // Register user account
 exports.register = async (req, res) => {
-  // Lets validate the data vefore we a user
-  const { error } = userRegisterValidation(req.body);
-  if (error) { 
-    res.status(500).json({ message: error.message });
-    return;
-  }
-
   // Checking if the username is already in database
   const usernameExit = await User.findOne({ username: req.body.username });
-  if (usernameExit) return res.status(400).json({ message: "Username already exists" });
+  if (usernameExit)
+    return res.status(400).json({ message: "Username already exists" });
 
   // Hash Passwords
   const salt = await bcrypt.genSalt(10);
@@ -72,25 +49,11 @@ exports.register = async (req, res) => {
   }
 };
 
-// Logout user account
-exports.logout = (req, res) => {
-  try {
-    // Clear cookie
-    res.clearCookie("token");
-    res.status(200).send({ message: "Logout successful" });
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-};
-
 // Get user account infomation
 exports.get = async (req, res, next) => {
   const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
   const id = user.id;
-  // Check user exists
-  const userExists = await User.findOne({ _id: id });
-  if (!userExists) return res.status(400).json({ message: "User is not found" });
-  // get account
+
   User.findById(id)
     .exec()
     .then((result) => {
@@ -114,7 +77,6 @@ exports.delete = async (req, res, next) => {
     .then((result) => {
       // Clear cookie
       res.clearCookie("token");
-      //console.log(result);
       res.status(200).json({
         message: "User deleted",
       });
@@ -132,9 +94,14 @@ exports.update = async (req, res, next) => {
   const userExists = await User.findOne({ _id: id });
   if (!userExists) return res.status(400).send("User is not found");
 
+  const validPass = await bcrypt.compare(
+    req.body.password,
+    userExists.password
+  );
+  if (!validPass) return res.status(400).send("Invalid password");
   // Hash Passwords
   const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(req.body.password, salt);
+  const hashPassword = await bcrypt.hash(req.body.newpassword, salt);
 
   // Update a new user
   const user = new User({
@@ -166,7 +133,8 @@ exports.updateProfile = async (req, res, next) => {
   const id = data.id;
   // Check user exists
   const userExists = await User.findOne({ _id: id });
-  if (!userExists) return res.status(400).json({ message: "User is not found" });
+  if (!userExists)
+    return res.status(400).json({ message: "User is not found" });
 
   const { error } = userProfileValidation(req.body);
   if (error) {
@@ -218,7 +186,9 @@ exports.updatePassword = async (req, res, next) => {
   const rePassword = req.body.rePassword;
 
   if (newPassword !== rePassword) {
-    res.status(400).json({ message: "New password and repassword does not match" });
+    res
+      .status(400)
+      .json({ message: "New password and repassword does not match" });
     return;
   }
 
@@ -234,11 +204,11 @@ exports.updatePassword = async (req, res, next) => {
   userExists.password = newHashedPassword;
   userExists
     .save()
-    .then(user => { 
+    .then((user) => {
       user.password = "";
       res.status(200).json({ user: user });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ message: err.message });
     });
 };

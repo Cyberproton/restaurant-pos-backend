@@ -11,7 +11,7 @@ router.get("/deliver", orderTestController.getDeliverOrders);
 
 router.get("/finished", orderTestController.getFinishedOrders);
 
-router.get("/user/:userId", orderTestController.getUserOrder);
+router.get("/user", orderTestController.getUserOrder);
 
 router.get("/:orderId", orderTestController.getOrderById);
 

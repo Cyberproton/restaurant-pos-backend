@@ -1,11 +1,16 @@
 const OrderTest = require("../models/OrderTest");
 const mongoose = require("mongoose");
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 mongoose.set("useFindAndModify", false);
 
 // Get all history order of User
 exports.getUserOrder = (req, res) => {
-  OrderTest.find({ userid: req.params.userId })
+  const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+  const id = user.id;
+  console.log(user);
+  OrderTest.find({ userid: id })
     .exec()
     .then((data) => {
       res.status(200).send({ orders: data });
@@ -89,13 +94,15 @@ exports.getOrderById = (req, res, next) => {
 // Add new an Order
 exports.addOrder = async (req, res, next) => {
   try {
+    const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+    let id = "";
+    if (user) id = user.id;
     const order = new OrderTest({
+      userid: id,
       foods: req.body.foods,
       table: req.body.table,
-      userid: req.body.userid,
       quantity: req.body.quantity,
       payment: req.body.payment,
-      paymentMethod: req.body.paymentMethod,
     });
     order
       .save()
