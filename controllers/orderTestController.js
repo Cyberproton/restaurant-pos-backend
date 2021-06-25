@@ -1,6 +1,5 @@
 const OrderTest = require("../models/OrderTest");
 const mongoose = require("mongoose");
-const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 mongoose.set("useFindAndModify", false);
@@ -9,7 +8,6 @@ mongoose.set("useFindAndModify", false);
 exports.getUserOrder = (req, res) => {
   const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
   const id = user.id;
-  console.log(user);
   OrderTest.find({ userid: id })
     .exec()
     .then((data) => {
@@ -94,16 +92,24 @@ exports.getOrderById = (req, res, next) => {
 // Add new an Order
 exports.addOrder = async (req, res, next) => {
   try {
-    const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
-    let id = "";
-    if (user) id = user.id;
-    const order = new OrderTest({
-      userid: id,
-      foods: req.body.foods,
-      table: req.body.table,
-      quantity: req.body.quantity,
-      payment: req.body.payment,
-    });
+    let order;
+    if (req.header("token")) {
+      const user = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+      order = new OrderTest({
+        userid: user.id,
+        foods: req.body.foods,
+        table: req.body.table,
+        quantity: req.body.quantity,
+        payment: req.body.payment,
+      });
+    } else {
+      order = new OrderTest({
+        foods: req.body.foods,
+        table: req.body.table,
+        quantity: req.body.quantity,
+        payment: req.body.payment,
+      });
+    }
     order
       .save()
       .then((order) => res.status(200).json({ order: order }))
@@ -139,7 +145,10 @@ exports.updateOrderState = (req, res, next) => {
 exports.payment = (req, res, next) => {
   const _id = req.body._id;
   const paymentMethod = req.body.paymentMethod;
-  OrderTest.updateOne({ _id: _id }, { $set: { paymentMethod: paymentMethod } })
+  OrderTest.updateOne(
+    { _id: _id },
+    { $set: { paymentMethod: paymentMethod, state: "finished" } }
+  )
     .exec()
     .then((orderTest) => res.status(200).send("Successful"))
     .catch((err) => res.status(500).json({ error: err }));

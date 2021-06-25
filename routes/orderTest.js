@@ -19,6 +19,8 @@ router.post("/delete", orderTestController.deleteOrder);
 
 router.post("/update-state", orderTestController.updateOrderState);
 
+router.post("/payment", orderTestController.payment);
+
 router.put("/payment", orderTestController.payment);
 
 module.exports = router;

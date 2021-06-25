@@ -39,9 +39,7 @@ const addBill = (req, res, next) => {
 };
 
 const deleteBill = (req, res, next) => {
-  //   console.log(req.params);
   const id = req.params.billId;
-  //   console.log(id);
   Bill.findByIdAndRemove(id)
     .exec()
     .then((bill) => res.status(200).json({ bill: bill }))
