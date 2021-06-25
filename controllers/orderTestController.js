@@ -116,7 +116,7 @@ exports.addOrder = async (req, res, next) => {
       .catch((err) =>
         res.status(500).json({ error: err, message: err.message })
       );
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: err });
     return;
   }
@@ -152,4 +152,12 @@ exports.payment = (req, res, next) => {
     .exec()
     .then((orderTest) => res.status(200).send("Successful"))
     .catch((err) => res.status(500).json({ error: err }));
+};
+
+exports.getOrders = (req, res, next) => {
+  OrderTest
+    .find()
+    .exec()
+    .then(orders => res.status(200).json({ orders: orders }))
+    .catch(err => res.status(500).json({ error: err }));
 };

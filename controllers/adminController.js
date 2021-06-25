@@ -68,11 +68,15 @@ exports.add = async (req, res, next) => {
 
 // Get current admin account infomation
 exports.get = async (req, res, next) => {
-  const admin = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
-  const id = admin.id;
-  const adminExists = await Admin.findOne({ _id: id });
-  if (!adminExists) return res.status(400).send("Admin is not found");
-  res.send(adminExists);
+  try {
+    const admin = jwt.verify(req.header("token"), process.env.TOKEN_SECRET);
+    const id = admin.id;
+    const adminExists = await Admin.findOne({ _id: id });
+    if (!adminExists) return res.status(400).send("Admin is not found");
+    res.send(adminExists);
+  } catch (err) {
+    return res.status(400).send("Admin is not found");
+  }
 };
 
 // Get role account

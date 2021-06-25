@@ -23,4 +23,6 @@ router.post("/payment", orderTestController.payment);
 
 router.put("/payment", orderTestController.payment);
 
+router.get("/", orderTestController.getOrders);
+
 module.exports = router;

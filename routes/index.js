@@ -24,7 +24,7 @@ function route(app) {
   // app.use("/api/order", orderRouter);
 
   // Order router
-  app.use("/api/ordertest", orderTestRouter);
+  app.use("/api/order", orderTestRouter);
 
   // Bill router
   app.use("/api/bill", billRouter);
